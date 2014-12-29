@@ -34,6 +34,7 @@ end
 # seeding the hashes
 db = {}
 stats = {}
+price = {}
 #
 # grok the ratings.csv file
 CSV.foreach("ratings.csv", headers:true) do |row|
@@ -41,21 +42,40 @@ CSV.foreach("ratings.csv", headers:true) do |row|
     if %w[Bourbon Rye Grain Tennessee Liqueur Wheat].include? row['Region']
         next
     end
+    # clean up key name
+    name = row["Whisky Name"].strip
     # get the rating as an integer
     val = row['Rating'].to_i
+    # get the cost as a floating point by removing non-digits
+    cost = row['Price'].to_s.gsub(/[^\d\.]/, '').to_f
     # seed key:val
-    if !db.has_key?(row['Whisky Name'])
-        db[row['Whisky Name']] = []
+    if !db.has_key?(name)
+        db[name] = []
+        price[name] = []
     end
     # append score
-    db[row['Whisky Name']] << ((val == nil) ? 0 : val)
+    db[name] << ((val == nil) ? 0 : val)
+    if cost > 0.0
+        price[name] << cost
+    end
 end
 #
 # do the confidence interval computations for all scotches meeting our thresholds.
 db.keys.each do |k|
 	if db[k].count > 5 # only eval whisky that has 6 or more reviews on reddit
 		pos = db[k].count {|x| x > 90 } # threshold as positive vote 91+% rating
-		stats[k] = [(ci_lower_bound(pos, db[k].count, 0.975) * 100.0).round(0), pos, db[k].count]
+        # calculate the price indicator
+        average = (price[k] != []) ? price[k].reduce(:+) / price[k].count : 0.0
+        indicator = case average.round(0)
+        when 0 then "?"
+        when 1..50 then "$"
+        when 50..70 then "$$"
+        when 70..90 then "$$$"
+        when 90..120 then "$$$$"
+        else
+            "$$$$$"
+        end
+		stats[k] = [(ci_lower_bound(pos, db[k].count, 0.975) * 100.0).round(0), pos, db[k].count, indicator]
 	end
 end
 #
