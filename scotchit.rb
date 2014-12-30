@@ -46,8 +46,13 @@ CSV.foreach("ratings.csv", headers:true) do |row|
     name = row["Whisky Name"].strip
     # get the rating as an integer
     val = row['Rating'].to_i
-    # get the cost as a floating point by removing non-digits
-    cost = row['Price'].to_s.gsub(/[^\d\.]/, '').to_f
+    # get the cost as a floating point by removing non-digits and throwing out
+    # un-american funny money
+    if !%w[£ CDN CAD AUD € GBP NZD EUR CAN].any? {|x| row['Price'].to_s.upcase.include? x} #ugly
+        cost = row['Price'].to_s.gsub(/[^\d\.]/, '').to_f
+    else
+        cost = 0.0
+    end
     # seed key:val
     if !db.has_key?(name)
         db[name] = []
@@ -55,7 +60,7 @@ CSV.foreach("ratings.csv", headers:true) do |row|
     end
     # append score
     db[name] << ((val == nil) ? 0 : val)
-    if cost > 0.0
+    if cost > 20.0
         price[name] << cost
     end
 end
@@ -68,9 +73,9 @@ db.keys.each do |k|
         average = (price[k] != []) ? price[k].reduce(:+) / price[k].count : 0.0
         indicator = case average.round(0)
         when 0 then "?"
-        when 1..50 then "$"
-        when 50..70 then "$$"
-        when 70..90 then "$$$"
+        when 1..39 then "$"
+        when 40..69 then "$$"
+        when 70..89 then "$$$"
         when 90..120 then "$$$$"
         else
             "$$$$$"
@@ -84,4 +89,4 @@ end
 # we are only displaying whole number percentages in order to avoid the presception that this is accurate to
 # some decimal of score. we're trying to select scotches that have good confidence of being yummy and deserving
 # of the price via the sample of redditors.
-stats.sort_by {|k,i| -i[0]}.each {|k,i| (i[0] > 20.0 && (puts "#{k}: #{i[0]}% (#{i[1]}+, #{i[2]}#)")) || nil}
+stats.sort_by {|k,i| -i[0]}.each {|k,i| (i[0] > 20.0 && (puts "#{k}: #{i[0]}% (#{i[1]}+, #{i[2]}#) #{i[3]}")) || nil}
