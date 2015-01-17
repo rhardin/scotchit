@@ -34,3 +34,31 @@ Aberlour 12 Non Chill Filtered: 44% (21+, 33#)
 Laphroaig 10 Cask Strength: 42% (18+, 29#)
 
 Where the first number is a confidence score expressed as a whole percentage followed by (positive votes, sample size).
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'scotchit'
+```
+
+And then execute:
+
+$ bundle
+
+Or install it yourself as:
+
+$ gem install scotchit
+
+## Usage
+
+`> ruby scotchit`
+
+## Contributing
+
+1. Fork it ( https://github.com/rhardin/scotchit/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
