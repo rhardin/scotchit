@@ -39,7 +39,14 @@ $ gem install scotchit
 
 ## Usage
 
-`./bin/scotchit`
+Command line: `./bin/scotchit`
+
+Or, you can `require scotchit` and then use the methods off of the `Scotchit` module:
+
+* `Scotchit.run()` will use lib/ratings.csv and print-to-term the stats
+* `Scotchit.ci_lower_bound(pos, n, confidence)` will generate a lower bound wilson score
+* `Scotchit.parse_csv(file_name)` will populate the `Scotchit::DB` hash
+* `Scotchit.score()` will populate the statistics and price inidactors
 
 ## Contributing
 
