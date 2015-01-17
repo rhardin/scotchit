@@ -2,4 +2,4 @@
 
 require 'scotchit'
 
-puts Scotchit.run()
+Scotchit.run()
