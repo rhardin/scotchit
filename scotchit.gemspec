@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{A scotch recommendation engine based on reddit.com/r/scotch's review archive.}
   spec.description   = %q{Runs a lower bound confidence score on scotchit's whisky review archive to generate buy recommendations.}
   spec.homepage      = "https://github.com/rhardin/scotchit"
-  spec.license       = "GPL"
+  spec.license       = "GPL-2.0-or-later"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 12.3.3"
   spec.add_development_dependency "statistics2", "~> 0.54"
 end
